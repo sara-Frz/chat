@@ -14,7 +14,7 @@ const chat = require("../models/chat")(sequelize,Sequelize.DataTypes);
 const message = require("../models/message")(sequelize,Sequelize.DataTypes);  
 
 module.exports = {
-    startChat: function(res,req,next){
+    startChat: function(req,res,next){
         var user1_id = req.params.id;
         var user2_id = req.body.id;
         var exist = chat.findOne({
@@ -39,7 +39,7 @@ module.exports = {
         res.send(exist)
     }},
 
-    sendMessage: function(res,req,next){
+    sendMessage: function(req,res,next){
         var msg = req.body.message;
         var sender_id = req.params.sender_id;
         var chat_id = req.params.chat_id;

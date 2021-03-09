@@ -1,14 +1,10 @@
 {
     "configurations": [
     {
-        "name": "Launch Program",
-        "program": "${workspaceFolder}/bin/www",
+        "command": "npm start",
+        "name": "Run npm start",
         "request": "launch",
-        "skipFiles": [
-            "<node_internals>/**"
-        ],
-        "type": "pwa-node",
-        "console": "integratedTerminal"
+        "type": "node-terminal"
     }
     ]
 }

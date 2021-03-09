@@ -11,15 +11,16 @@ if (config.use_env_variable) {
 const user = require("../models/user")(sequelize,Sequelize.DataTypes);
 
 module.exports = {
-showAllUsers:function(res,req,next) {
+showAllUsers:function(req,res,next) {
     const users = user.findAll();
     res.send(users);
 },
 
-createUser:function (res,req,next) {
+createUser:function (req,res,next) {
     const  username = req.body.username;
     const phone_number = req.body.phone_number;
     const exist = user.findOne({where: {username: username}});
+    console.log(exist);
     if (exist == null) {
         user.create({'username':username,'phone_number':phone_number});
         console.log(username);
@@ -28,7 +29,7 @@ createUser:function (res,req,next) {
     }
 },
 
-deleteUser:function (res, req, next){
+deleteUser:function (req, res, next){
     console.log("creating user!")
     const username = req.body.username;
     const phone_number = req.body.phone_number;
