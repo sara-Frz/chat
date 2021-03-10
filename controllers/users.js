@@ -11,34 +11,35 @@ if (config.use_env_variable) {
 const user = require("../models/user")(sequelize,Sequelize.DataTypes);
 
 module.exports = {
-showAllUsers:function(req,res,next) {
-    const users = user.findAll();
+showAllUsers:async function(req,res,next) {
+    const users = await user.findAll();
     res.send(users);
 },
 
-createUser:function (req,res,next) {
+createUser:async function (req,res,next) {
     const  username = req.body.username;
     const phone_number = req.body.phone_number;
-    const exist = user.findOne({where: {username: username}});
+    const exist = await user.findOne({where: {username: username}});
     console.log(exist);
     if (exist == null) {
         user.create({'username':username,'phone_number':phone_number});
-        console.log(username);
+        res.send("username added!");
     }else{
         res.send('username already exists!')
     }
 },
 
-deleteUser:function (req, res, next){
+deleteUser:async function (req, res, next){
     console.log("creating user!")
     const username = req.body.username;
     const phone_number = req.body.phone_number;
-    const exist = user.findOne({where: {
+    const exist = await user.findOne({where: {
         username:username,
         phone_number:phone_number
     }});
     if (exist != null){
-        user.destroy({where: {username:username}})
+        await user.destroy({where: {username:username}})
+        res.send("username deleted!")
     }else{
         res.send("Username does not exists!")
     }

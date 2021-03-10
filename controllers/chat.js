@@ -14,17 +14,17 @@ const chat = require("../models/chat")(sequelize,Sequelize.DataTypes);
 const message = require("../models/message")(sequelize,Sequelize.DataTypes);  
 
 module.exports = {
-    startChat: function(req,res,next){
+    startChat:async function(req,res,next){
         var user1_id = req.params.id;
         var user2_id = req.body.id;
-        var exist = chat.findOne({
+        var exist = await chat.findOne({
             where:{
             user1_id:user1_id,
             user2_id:user2_id
         }});
         if(exist == null){
-        chat.create({user1_id:user1_id, user2_id:user2_id});
-        var chat_id = chat.findOne({
+        await chat.create({user1_id:user1_id, user2_id:user2_id});
+        var chat_id = await chat.findOne({
             attributes:['id'],
             where:{
                 user1_id:user1_id,
@@ -43,7 +43,7 @@ module.exports = {
         var msg = req.body.message;
         var sender_id = req.params.sender_id;
         var chat_id = req.params.chat_id;
-        message.create({message:msg, sender_id:sender_id, chat_id:chat_id}); 
+        await message.create({message:msg, sender_id:sender_id, chat_id:chat_id}); 
 
     }
 
