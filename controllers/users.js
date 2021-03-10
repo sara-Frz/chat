@@ -19,13 +19,24 @@ showAllUsers:async function(req,res,next) {
 createUser:async function (req,res,next) {
     const  username = req.body.username;
     const phone_number = req.body.phone_number;
-    const exist = await user.findOne({where: {username: username}});
-    console.log(exist);
-    if (exist == null) {
-        user.create({'username':username,'phone_number':phone_number});
-        res.send("username added!");
+    const phone_number_regex = /\d{11}/
+    if (!phone_number_regex.test(phone_number)){
+        res.status(400).send("not a phone_nummber")
+        return null
+    }
+    const username_exist = await user.findOne({where: {username: username}});
+    const phone_number_exist = await user.findOne({where: {phone_number: phone_number}});
+
+    if ((username_exist != null)) {
+        res.status(409).send("username exists!")
+        return null
+    }else if(phone_number_exist != null){
+        res.status(409).send('A username with this phone number exists!')
+        return null
     }else{
-        res.send('username already exists!')
+        user.create({'username':username,'phone_number':phone_number});
+        res.status(201).send("username added!");
+        return null
     }
 },
 
@@ -40,8 +51,10 @@ deleteUser:async function (req, res, next){
     if (exist != null){
         await user.destroy({where: {username:username}})
         res.send("username deleted!")
+        return null
     }else{
-        res.send("Username does not exists!")
+        res.status(409).send("Username does not exists!")
+        return null
     }
 }
 
