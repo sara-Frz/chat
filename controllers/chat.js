@@ -1,8 +1,9 @@
 
-
 const env = process.env.NODE_ENV || 'development';
 const config = require(__dirname + '/../config/config.json')[env];
 const Sequelize = require('sequelize');
+const user = require('../models/user');
+const {verifyuserID} = require('../auth/user')
 
 let sequelize;
 if (config.use_env_variable) {
@@ -12,38 +13,40 @@ if (config.use_env_variable) {
 
 const chat = require("../models/chat")(sequelize,Sequelize.DataTypes);
 const message = require("../models/message")(sequelize,Sequelize.DataTypes);  
-
+const user = require('../models/user')(sequelize,Sequelize.DataTypes);
 module.exports = {
-    startChat:async function(req,res,next){
-        var user1_id = req.params.id;
+    showChats: async function(req, res, next){
+        var user_id = verifyuserID(req);
+        var chats = chat.findAll({
+            where:{
+                user1_id:user_id
+            }
+        })
+
+    },
+    createChat:async function(req,res,next){
+        var user1_id = verifyuserID(req)
         var user2_id = req.body.id;
-        var exist = await chat.findOne({
+        await chat.findOrCreate({
             where:{
             user1_id:user1_id,
             user2_id:user2_id
         }});
-        if(exist == null){
-        await chat.create({user1_id:user1_id, user2_id:user2_id});
-        var chat_id = await chat.findOne({
-            attributes:['id'],
-            where:{
-                user1_id:user1_id,
-                user2_id:user2_id
-            }
-        })
-        res.send(message.findAll({
-            where:{
-            chat_id:chat_id
-        }}));
-    }else{
-        res.send(exist)
-    }},
+        
+    },
+    showUsers: async function(req, res, next){
 
-    sendMessage: function(req,res,next){
-        var msg = req.body.message;
-        var sender_id = req.params.sender_id;
-        var chat_id = req.params.chat_id;
-        await message.create({message:msg, sender_id:sender_id, chat_id:chat_id}); 
+    },
+    deleteChat: async function(req, res, next){
+
+    },
+    showMessages: async function(req, res, next){
+
+    },
+    sendMessage: async function(req, res, next){
+
+    },
+    deleteMessage: async function(req, res, next){
 
     }
 
