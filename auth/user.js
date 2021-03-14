@@ -15,12 +15,12 @@ module.exports = {
     verifyuserID: function(req){
         var token = req.header.authorization
         var phone_number = jwt.verify(token, secret_key).data.phone_number;
-        var user_id = await user.findOne({
-            where:{
-                phone_number:phone_number
-            },
-            attributes:['id']
-        })
+        // var user_id = await user.findOne({
+        //     where:{
+        //         phone_number:phone_number
+        //     },
+        //     attributes:['id']
+        // })
         return user_id 
     }
 }
